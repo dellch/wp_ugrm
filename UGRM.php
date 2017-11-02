@@ -11,8 +11,21 @@ License: GPL2
 
 require_once dirname(__FILE__) . '/options.php';
 
+function UGRM_get_header()
+{
+    if ($_SERVER['UFADGroupsDN']) return 'UFADGroupsDN';
+    if ($_SERVER['HTTP_UFADGROUPSDN']) return 'HTTP_UFADGROUPSDN';
+    if ($_SERVER['REDIRECT_UFADGroupsDN']) return 'REDIRECT_UFADGroupsDN';
+    if ($_SERVER['UFShib_UFADGroupsDN']) return 'UFShib_UFADGroupsDN';
+    if ($_SERVER['REDIRECT_UFShib_UFADGroupsDN']) return 'REDIRECT_UFShib_UFADGroupsDN';
+    if ($_SERVER['UFShib_REDIRECT_UFADGroupsDN']) return 'UFShib_REDIRECT_UFADGroupsDN';
+    return NULL;
+}
+
 function UGRM_munge_UFAD_Groups2Roles($user_role) {
-    if (isset($_SERVER['UFADGroupsDN']) || isset($_SERVER['HTTP_UFADGROUPSDN']) || isset($_SERVER['REDIRECT_UFADGroupsDN'])) {
+    $header_text = UGRM_get_header();
+    if ($header_text) {
+        $UFADGroupsDN = $_SERVER[$header_text];
         $UGRM_admin_role       = get_option('UGRM_admin_role');
         $UGRM_editor_role      = get_option('UGRM_editor_role');
         $UGRM_author_role      = get_option('UGRM_author_role');
@@ -28,12 +41,7 @@ function UGRM_munge_UFAD_Groups2Roles($user_role) {
         //We've discovered with Wordpress Multisite enabled the HTTP_UFADGROUPSDN is sometimes
         //prepended wth REDIRECT when there is an internal Apache or PHP redirect. To accomodate
         //this behavior, we extended the original if statement with an elseif.
-        elseif (isset($_SERVER['UFADGroupsDN'])) {
-            $UFADGroupsDN = $_SERVER['UFADGroupsDN'];    
-        }
-	else {
-	    $UFADGroupsDN = $_SERVER['REDIRECT_UFADGroupsDN'];	
-	}
+
         if (strpos($UFADGroupsDN, $UGRM_admin_role)) {
             $user_role = "administrator";
         }
