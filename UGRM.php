@@ -13,6 +13,12 @@ require_once dirname(__FILE__) . '/options.php';
 
 function UGRM_get_header()
 {
+	//IIS prepends a HTTP_ prefix to all the Shibboleth server variables
+        //because Shibboleth sends them through CGI as IIS does not
+        //support envirnoment variables. See https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPAttributeAccess
+        //for details. Thus we check for IIS.
+	//HTTP_UFADGROUPSDN is sometimes prepended wth REDIRECT when there is an internal Apache or PHP redirect. 
+		
     if ($_SERVER['UFADGroupsDN']) return 'UFADGroupsDN';
     if ($_SERVER['HTTP_UFADGROUPSDN']) return 'HTTP_UFADGROUPSDN';
     if ($_SERVER['REDIRECT_UFADGroupsDN']) return 'REDIRECT_UFADGroupsDN';
@@ -30,10 +36,7 @@ function UGRM_munge_UFAD_Groups2Roles($user_role) {
         $UGRM_author_role      = get_option('UGRM_author_role');
         $UGRM_contributor_role = get_option('UGRM_contributor_role');
         $UGRM_subscriber_role  = get_option('UGRM_subscriber_role');
-        //IIS prepends a HTTP_ prefix to all the Shibboleth server variables
-        //because Shibboleth sends them through CGI as IIS does not
-        //support envirnoment variables. See https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPAttributeAccess
-        //for details. Thus we check for IIS.
+        
         if (strpos($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
             $UFADGroupsDN = $_SERVER['HTTP_UFADGROUPSDN']; 
         }
