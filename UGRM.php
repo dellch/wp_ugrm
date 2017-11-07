@@ -18,7 +18,6 @@ function UGRM_get_header()
     if ($_SERVER['REDIRECT_UFADGroupsDN']) return 'REDIRECT_UFADGroupsDN';
     if ($_SERVER['UFShib_UFADGroupsDN']) return 'UFShib_UFADGroupsDN';
     if ($_SERVER['REDIRECT_UFShib_UFADGroupsDN']) return 'REDIRECT_UFShib_UFADGroupsDN';
-    if ($_SERVER['UFShib_REDIRECT_UFADGroupsDN']) return 'UFShib_REDIRECT_UFADGroupsDN';
     return NULL;
 }
 
@@ -60,12 +59,7 @@ function UGRM_munge_UFAD_Groups2Roles($user_role) {
         else {
             $user_role = "none";
         }
-#        echo "<h1>site_option = ".get_site_option('UGRM_editor_role')."</h1>";
-#        echo "<h2>regs option = ".get_option('UGRM_admin_role')."</h2>";
-#        echo "<h1>LOGINWALLA: Mapping user role $user_role  $UGRM_editor_role</h1>";
-#        echo "<h2>UFADGroupsDN = $UFADGroupsDN</h2>";
-#        echo "<h2>user_role = $user_role</h2>";
-#        exit();
+		
         return $user_role;
     }
 }
@@ -77,8 +71,7 @@ function UGRM_munge_return_target_to_HTTPS($initiator_url) {
        if (!strpos($initiator_url,'target=https') ){
             $initiator_url=str_replace('target=http','target=https',$initiator_url);
        }
-        //echo "<h1>$initiator_url</h1>\n";
-        //die();
+	   
         return $initiator_url;
     }
     else {
