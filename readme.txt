@@ -1,10 +1,10 @@
 === Plugin Name ===
-Contributors: warren.brown,taylorwilson
+Contributors: warren.brown
 Donate link: http://www.flmnh.ufl.edu/
 Tags: UF, UFAD authentication, login, SAML, shibboleth
 Requires at least: 3.2.1
-Tested up to: 4.9.4
-Stable tag: 2.0
+Tested up to: 4.6.1
+Stable tag: 1.7.1
 
 This plugin extends the Shibboleth plugin to work with UFAD & Shibboleth at the University of Florida. Developed at the Florida Museum of Natural History.
 
@@ -15,33 +15,33 @@ installed and activated. Otherwise, the plugin will fail to activate as the shib
 
 To use this plugin, you must already have the following setup on your server:
 1. The above Shibbleth plugin.
-2. A UFAD group created for each of the Wordpress roles (administrator, editor, author, contributor, and subscriber).
+2. UF Shibboleth ARP-Groups associated with your URN
+3. A UFAD group created for each of the Wordpress roles (administrator, editor, author, contributor, and subscriber).
 
 == Installation ==
 
 1. Install, activate, configure and test the Shibbloeth plugin. When it is working, procede.
-2. Create a UGRM directory in `/wp-content/plugins/` directory
-3. Extract the contents of the UGRM.tar.gz plugin archive to the `/wp-content/plugins/UGRM` directory
-4. Populate UgrmLdapConfig::$configuration attribute located at `/wp-content/plugins/UGRM/ldap-config.php`.  Options are:
-    a. binddn - The Distinguished Name (DN) of the user or service account that will query LDAP server for group membership.
-    b. pw - The password for the user or service account connecting to ldap. (binddn user)
-    c. basedn - The base DN for the LDAP directory.
-    d. ldapUri - The URI of the ldap server.
-5. Activate the plugin through the 'Plugins' menu in WordPress
-6. Populate the 'UFAD Groups to Roles' options page under the 'Settings' menu in Wordpress.
+1. Create a UGRM directory in `/wp-content/plugins/` directory
+1. Extract the contents of the UGRM.tar.gz plugin archive to the `/wp-content/plugins/UGRM` directory
+1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Populate the 'UFAD Groups to Roles' options page under the 'Settings' menu in Wordpress.
 
 == Frequently Asked Questions ==
 
 = It's not working. What should I check? =
 
-Check for typos on the options page and ensure you've spelled your UFAD groups correctly.
+First, check for typos on the options page and ensure you've spelled your UFAD groups correctly.
 
-`If $_SERVER['glid']` for Apache or `$_SERVER['HTTP_glid']` for IIS is not present, then complete
-the correct application to have glid included in UF Shibboleth URN.
+Second, double check that your Shibboleth SP is vending the UFADGroupsDN attribute from ARP-Groups.
+Refer to the UF Shibboleth PHP code examples at http://www.it.ufl.edu/identity/shibboleth/technicalcodeexamples.html
+for ideas. If you are unsure what this means, have an adult do this for you.
 
-Verify that you can make a connection to the ldap server specified in ldapUri set in the options file.  You may do this by launching ldp.ext 
-in Windows and inputting the binddn and password from the options file.  You could also use any of the various ldap modules for any 
-programming language to test.
+`If $_SERVER['UFADGroupsDN']` for Apache or `$_SERVER['HTTP_UFADGROUPSDN']` for IIS is not present, then complete
+the correct application to add ARP-Groups to your UF Shibboleth URN.
+
+If you verify `$_SERVER['UFADGroupsDN']` is present, check for the value(s) you entered on the plugin options page. If they are not present,
+you have UFAD group membership problem. If they are present, check for special characters. The plugin only allows a-z, A-Z, 0-9 and - (as in a hyphen or dash).
+If you've used other characters, rename the group to elimated the disallowed characters.
 
 = What if I've done all that and it still doesn't work? =
 
@@ -53,11 +53,6 @@ Contact the plugin author(s), who will respond in a vague and unspecified amount
 2.  Plugin Config Options
 
 == Changelog ==
-= 2.0 =
-* Updates UGRM.php to use UgrmLdap class from ldap.php to query UFAD LDAP server to get group membership by shibboleth provided `glid` apache server variable.
-* Adds ldap-config.php containing LDAP connection parameters.
-* Corrects bug in options.php where $_SERVER superglobal array keys were not quoted, emitting an error for undeclared constant.
-
 = 1.7.1 =
 * Corrected typo in code. Minor fix, but very large impact.
 
